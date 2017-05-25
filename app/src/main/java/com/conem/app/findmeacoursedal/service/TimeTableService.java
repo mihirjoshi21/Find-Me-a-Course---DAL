@@ -17,9 +17,6 @@ import com.conem.app.findmeacoursedal.adapter.SubjectAdapter;
 import com.conem.app.findmeacoursedal.screen.SubjectActivity;
 import com.conem.app.findmeacoursedal.util.ProjectUtil;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.Timer;
@@ -55,10 +52,7 @@ public class TimeTableService extends Service {
 
                             Set<String> savedItem = ProjectUtil.getSharedPreferencesString(getBaseContext());
                             for (String url : SubjectActivity.URL) {
-                                Document doc = Jsoup.connect(url)
-                                        .timeout(SubjectActivity.TIMEOUT)
-                                        .post();
-                                Matcher matcher = Pattern.compile(PATTERN).matcher(doc.toString()
+                                Matcher matcher = Pattern.compile(PATTERN).matcher(ProjectUtil.readUrl(url)
                                         .replaceAll("\\n", ""));
 
                                 while (matcher.find()) {

@@ -17,9 +17,7 @@ import android.widget.Spinner;
 import com.conem.app.findmeacoursedal.R;
 import com.conem.app.findmeacoursedal.adapter.SubjectAdapter;
 import com.conem.app.findmeacoursedal.service.TimeTableService;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import com.conem.app.findmeacoursedal.util.ProjectUtil;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -98,9 +96,8 @@ public class SubjectActivity extends AppCompatActivity {
                 int count = -1;
                 ArrayList<String> subjectList = new ArrayList<>();
                 try {
-                    Document doc = Jsoup.connect(URL[position]).timeout(TIMEOUT).post();
-
-                    Matcher matcher = Pattern.compile(PATTERN).matcher(doc.toString().replaceAll("\\n", ""));
+                    Matcher matcher = Pattern.compile(PATTERN).matcher(ProjectUtil
+                            .readUrl(URL[position]).replaceAll("\\n", ""));
 
                     while (matcher.find()) {
                         subjectList.add(matcher.group());
