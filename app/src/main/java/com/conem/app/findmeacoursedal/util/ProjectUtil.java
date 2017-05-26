@@ -20,13 +20,14 @@ public class ProjectUtil {
     protected static final String DAL_PREFERENCE = "DAL_PREFERENCE";
 
     public static void setSharedSet(Context context, Set<String> savedSet) {
+        context.getSharedPreferences(DAL_PREFERENCE, Context.MODE_PRIVATE).edit().clear().apply();
         context.getSharedPreferences(DAL_PREFERENCE, Context.MODE_PRIVATE).edit()
                 .putStringSet(SET_KEY, savedSet).apply();
     }
 
     public static Set<String> getSharedPreferencesString(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(DAL_PREFERENCE, Context.MODE_PRIVATE);
-        return sharedPreferences.getStringSet(SET_KEY, new HashSet<String>());
+        return sharedPreferences.getStringSet(SET_KEY, new HashSet<>());
     }
 
     /**

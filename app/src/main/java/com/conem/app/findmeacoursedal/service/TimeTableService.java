@@ -45,7 +45,6 @@ public class TimeTableService extends Service {
 
                     @Override
                     protected ArrayList<String> doInBackground(Void... params) {
-                        int count = -1;
                         ArrayList<String> subjectAvailable = new ArrayList<>();
 
                         try {

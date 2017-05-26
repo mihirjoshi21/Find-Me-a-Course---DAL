@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.conem.app.findmeacoursedal.R;
@@ -81,23 +80,17 @@ public class SubjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ((RecyclerViewHolders) holder).check.setChecked(mSavedSet
                 .contains(((RecyclerViewHolders) holder).textSubject.getText().toString()));
 
-        ((RecyclerViewHolders) holder).check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mSavedSet.add(((RecyclerViewHolders) holder).textSubject.getText().toString());
-                } else {
-                    mSavedSet.remove(((RecyclerViewHolders) holder).textSubject.getText().toString());
-                }
-                ProjectUtil.setSharedSet(mActivity, mSavedSet);
+        ((RecyclerViewHolders) holder).check.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mSavedSet.add(((RecyclerViewHolders) holder).textSubject.getText().toString());
+            } else {
+                mSavedSet.remove(((RecyclerViewHolders) holder).textSubject.getText().toString());
             }
+            ProjectUtil.setSharedSet(mActivity, mSavedSet);
         });
 
-        ((RecyclerViewHolders) holder).itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ((RecyclerViewHolders) holder).itemView.setOnClickListener(v -> {
 
-            }
         });
 
     }

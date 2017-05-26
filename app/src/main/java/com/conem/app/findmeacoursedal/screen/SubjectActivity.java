@@ -57,8 +57,6 @@ public class SubjectActivity extends AppCompatActivity {
         mActivity = this;
         ButterKnife.bind(mActivity);
 
-        startService(new Intent(this,TimeTableService.class));
-
         setLayoutManager(mActivity, recycleList, LinearLayoutManager.VERTICAL);
         spinner.setAdapter(new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,
                 new String[]{"FALL", "WINTER"}));
@@ -74,6 +72,18 @@ public class SubjectActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        startService(new Intent(this,TimeTableService.class));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        stopService(new Intent(this,TimeTableService.class));
     }
 
     @Override
@@ -93,7 +103,6 @@ public class SubjectActivity extends AppCompatActivity {
             @Override
             protected ArrayList<String> doInBackground(Void... params) {
 
-                int count = -1;
                 ArrayList<String> subjectList = new ArrayList<>();
                 try {
                     Matcher matcher = Pattern.compile(PATTERN).matcher(ProjectUtil
@@ -102,9 +111,6 @@ public class SubjectActivity extends AppCompatActivity {
                     while (matcher.find()) {
                         subjectList.add(matcher.group());
                     }
-                    count = 0;
-
-                    System.out.println(count);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
