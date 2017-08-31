@@ -47,7 +47,7 @@ public class SubjectActivity extends AppCompatActivity {
     ProgressBar progress;
 
     private SubjectActivity mActivity;
-    private AsyncTask mAsyncTask;
+    private AsyncTask<Void, ArrayList<String>, ArrayList<String>> mAsyncTask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +64,10 @@ public class SubjectActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (mAsyncTask != null && !mAsyncTask.isCancelled()){
+                    System.out.println("Cancelling");
+                    mAsyncTask.cancel(true);
+                }
                 searchDal(position);
             }
 
@@ -77,13 +81,13 @@ public class SubjectActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        startService(new Intent(this,TimeTableService.class));
+        startService(new Intent(this, TimeTableService.class));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        stopService(new Intent(this,TimeTableService.class));
+        stopService(new Intent(this, TimeTableService.class));
     }
 
     @Override
@@ -95,13 +99,13 @@ public class SubjectActivity extends AppCompatActivity {
 
     private void searchDal(final int position) {
 
-        if (mAsyncTask != null) mAsyncTask.cancel(true);
-
         setVisibility(true);
         mAsyncTask = new AsyncTask<Void, ArrayList<String>, ArrayList<String>>() {
 
             @Override
             protected ArrayList<String> doInBackground(Void... params) {
+
+                System.out.println("Background");
 
                 ArrayList<String> subjectList = new ArrayList<>();
                 try {
@@ -119,16 +123,23 @@ public class SubjectActivity extends AppCompatActivity {
             }
 
             @Override
+            protected void onCancelled(ArrayList<String> strings) {
+                super.onCancelled(strings);
+                System.out.println(strings);
+            }
+
+            @Override
             protected void onPostExecute(ArrayList<String> subjects) {
                 super.onPostExecute(subjects);
 
                 setVisibility(false);
+                System.out.println("Post");
                 SubjectAdapter subjectAdapter = new SubjectAdapter(mActivity, subjects);
                 recycleList.setAdapter(subjectAdapter);
 
             }
         };
-        mAsyncTask.execute((Void[]) null);
+        mAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
