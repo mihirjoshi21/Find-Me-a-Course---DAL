@@ -23,8 +23,9 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by mj on 5/26/2017.
@@ -32,22 +33,26 @@ import butterknife.ButterKnife;
 
 public class SubjectActivity extends AppCompatActivity {
 
-    public static final String[] URL = {"https://dalonline.dal.ca/PROD/fysktime.P_DisplaySchedule?s_term=201810&s_crn=&s_subj=CSCI&s_numb=&n=21&s_district=100",
-            "https://dalonline.dal.ca/PROD/fysktime.P_DisplaySchedule?s_term=201820&s_crn=&s_subj=CSCI&s_numb=&n=21&s_district=100"};
+    public static final String[] URL = {"https://dalonline.dal.ca/PROD/fysktime.P_DisplaySchedule?s_term=201810&s_crn=&s_subj=CSCI&s_numb=&n=1&s_district=100",
+            "https://dalonline.dal.ca/PROD/fysktime.P_DisplaySchedule?s_term=201820&s_crn=&s_subj=CSCI&s_numb=&n=1&s_district=100"};
     //TODO Summer URL
 
     public static final int TIMEOUT = 60000;
     public static final String PATTERN = "CSCI \\d{3,}.*?T\\d{3,}\\s*<";
 
-    @Bind(R.id.spinner)
+    @BindView(R.id.spinner)
     Spinner spinner;
-    @Bind(R.id.recycle_list)
+    @BindView(R.id.spinner_page)
+    Spinner spinnerPage;
+    @BindView(R.id.recycle_list)
     RecyclerView recycleList;
-    @Bind(R.id.progress)
+    @BindView(R.id.progress)
     ProgressBar progress;
 
     private SubjectActivity mActivity;
     private AsyncTask<Void, ArrayList<String>, ArrayList<String>> mAsyncTask;
+    private Unbinder unbinder;
+    private int termPosition = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,20 +60,40 @@ public class SubjectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mActivity = this;
-        ButterKnife.bind(mActivity);
+        unbinder = ButterKnife.bind(mActivity);
 
         setLayoutManager(mActivity, recycleList, LinearLayoutManager.VERTICAL);
         spinner.setAdapter(new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,
                 new String[]{"FALL", "WINTER"}));
+        spinnerPage.setAdapter(new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,
+                new String[]{"1", "2", "3"}));
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (mAsyncTask != null && !mAsyncTask.isCancelled()){
+                if (mAsyncTask != null && !mAsyncTask.isCancelled()) {
                     System.out.println("Cancelling");
                     mAsyncTask.cancel(true);
                 }
-                searchDal(position);
+                termPosition = position;
+                spinnerPage.setSelection(0);
+                searchDal(position, 0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spinnerPage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (mAsyncTask != null && !mAsyncTask.isCancelled()) {
+                    System.out.println("Cancelling");
+                    mAsyncTask.cancel(true);
+                }
+                searchDal(termPosition, position);
             }
 
             @Override
@@ -93,11 +118,11 @@ public class SubjectActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(mActivity);
+        unbinder.unbind();
         mAsyncTask.cancel(true);
     }
 
-    private void searchDal(final int position) {
+    private void searchDal(final int position, final int pagePosition) {
 
         setVisibility(true);
         mAsyncTask = new AsyncTask<Void, ArrayList<String>, ArrayList<String>>() {
@@ -110,7 +135,10 @@ public class SubjectActivity extends AppCompatActivity {
                 ArrayList<String> subjectList = new ArrayList<>();
                 try {
                     Matcher matcher = Pattern.compile(PATTERN).matcher(ProjectUtil
-                            .readUrl(URL[position]).replaceAll("\\n", ""));
+                            .readUrl(pagePosition == 0 ? URL[position] :
+                                    (pagePosition == 1 ? URL[position].replaceAll("n=\\d+", "n=21")
+                                            : URL[position].replaceAll("n=\\d+", "n=41")))
+                            .replaceAll("\\n", ""));
 
                     while (matcher.find()) {
                         subjectList.add(matcher.group());

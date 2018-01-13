@@ -17,7 +17,7 @@ import com.conem.app.findmeacoursedal.util.ProjectUtil;
 import java.util.ArrayList;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -30,11 +30,11 @@ public class SubjectAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     static class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @Bind(R.id.text_subject)
+        @BindView(R.id.text_subject)
         TextView textSubject;
-        @Bind(R.id.text_seats)
+        @BindView(R.id.text_seats)
         TextView textSeats;
-        @Bind(R.id.check)
+        @BindView(R.id.check)
         CheckBox check;
 
         public RecyclerViewHolders(Context context, View itemView) {
