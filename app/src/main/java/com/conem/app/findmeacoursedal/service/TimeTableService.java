@@ -48,21 +48,26 @@ public class TimeTableService extends Service {
                         ArrayList<String> subjectAvailable = new ArrayList<>();
 
                         try {
-
+                            String urlModified;
                             Set<String> savedItem = ProjectUtil.getSharedPreferencesString(getBaseContext());
                             for (String url : SubjectActivity.URL) {
-                                Matcher matcher = Pattern.compile(PATTERN).matcher(ProjectUtil.readUrl(url)
-                                        .replaceAll("\\n", ""));
+                                for (int i = 0; i < 3; i++) {
+                                    urlModified = url;
+                                    urlModified = i == 0 ? urlModified:
+                                            (i == 1 ? urlModified.replaceAll("n=\\d+", "n=21")
+                                                    : urlModified.replaceAll("n=\\d+", "n=41"));
+                                    Matcher matcher = Pattern.compile(PATTERN).matcher(ProjectUtil.readUrl(urlModified)
+                                            .replaceAll("\\n", ""));
 
-                                while (matcher.find()) {
-                                    if (savedItem.contains(matcher.group()
-                                            .replaceAll(SubjectAdapter.SUBJECT_NAME_PATTERN, "$1")) &&
-                                            !matcher.group().contains("darkred")) {
-                                        subjectAvailable.add(matcher.group()
-                                                .replaceAll(SubjectAdapter.SUBJECT_NAME_PATTERN, "$1"));
+                                    while (matcher.find()) {
+                                        if (savedItem.contains(matcher.group()
+                                                .replaceAll(SubjectAdapter.SUBJECT_NAME_PATTERN, "$1")) &&
+                                                !matcher.group().contains("darkred")) {
+                                            subjectAvailable.add(matcher.group()
+                                                    .replaceAll(SubjectAdapter.SUBJECT_NAME_PATTERN, "$1"));
+                                        }
                                     }
                                 }
-
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

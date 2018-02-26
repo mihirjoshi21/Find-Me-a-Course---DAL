@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:name=".screen.SubjectActivity"
             android:screenOrientation="portrait">
             <intent-filter>

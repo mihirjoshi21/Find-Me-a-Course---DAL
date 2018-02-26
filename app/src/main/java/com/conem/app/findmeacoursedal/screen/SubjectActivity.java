@@ -34,7 +34,8 @@ import butterknife.Unbinder;
 public class SubjectActivity extends AppCompatActivity {
 
     public static final String[] URL = {"https://dalonline.dal.ca/PROD/fysktime.P_DisplaySchedule?s_term=201810&s_crn=&s_subj=CSCI&s_numb=&n=1&s_district=100",
-            "https://dalonline.dal.ca/PROD/fysktime.P_DisplaySchedule?s_term=201820&s_crn=&s_subj=CSCI&s_numb=&n=1&s_district=100"};
+            "https://dalonline.dal.ca/PROD/fysktime.P_DisplaySchedule?s_term=201820&s_crn=&s_subj=CSCI&s_numb=&n=1&s_district=100",
+            "https://dalonline.dal.ca/PROD/fysktime.P_DisplaySchedule?s_term=201830&s_crn=&s_subj=CSCI&s_numb=&n=1&s_district=100"};
     //TODO Summer URL
 
     public static final int TIMEOUT = 60000;
@@ -64,7 +65,7 @@ public class SubjectActivity extends AppCompatActivity {
 
         setLayoutManager(mActivity, recycleList, LinearLayoutManager.VERTICAL);
         spinner.setAdapter(new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,
-                new String[]{"FALL", "WINTER"}));
+                new String[]{"FALL", "WINTER", "SUMMER"}));
         spinnerPage.setAdapter(new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,
                 new String[]{"1", "2", "3"}));
 
